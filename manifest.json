@@ -1,0 +1,18 @@
+{
+  "required_api_version": "2",
+  "name": "Todo-List",
+  "description": "Show a list of tasks",
+  "developer_name": "Ural Kemal",
+  "icon": "images/icon.png",
+  "options": {
+    "query_debounce": 0.1
+  },
+  "preferences": [
+    {
+      "id": "todo_kw",
+      "type": "keyword",
+      "name": "TODO Keyword",
+      "description": "Keyword to trigger the TODO extension",
+      "default_value": "TODO"
+    }
+  ]}
