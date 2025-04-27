@@ -32,11 +32,14 @@ class KeywordQueryEventListener(EventListener):
         items = []
         tasks = load_tasks()
         
-        if query.strip():
+        # Check if we're using the delete keyword
+        keyword = event.get_argument()
+        del_mode = keyword == extension.preferences['del_kw']
+        if query.strip() and not del_mode:
             # Show option to add new task
             items.append(
                 ExtensionResultItem(
-                    icon='images/icon.png',  
+                    icon='images/icon.png',
                     name=f"Add task: {query.strip()}",
                     description="Press Enter to save this task",
                     on_enter=ExtensionCustomAction({"action": "add_task", "task": query.strip()})
@@ -47,7 +50,7 @@ class KeywordQueryEventListener(EventListener):
         if not tasks:
             items.append(
                 ExtensionResultItem(
-                    icon='images/icon.png', 
+                    icon='images/icon.png',
                     name="No tasks found." if not query.strip() else "No existing tasks.",
                     description="",
                     on_enter=DoNothingAction()
@@ -55,14 +58,25 @@ class KeywordQueryEventListener(EventListener):
             )
         else:
             for i, task in enumerate(tasks):
-                items.append(
-                    ExtensionResultItem(
-                        icon='images/icon.png',
-                        name=task,
-                        description="Press Enter to remove this task",
-                        on_enter=ExtensionCustomAction({"action": "remove_task", "index": i})
+                # Filter tasks if query is provided in delete mode
+                if del_mode:
+                    items.append(
+                        ExtensionResultItem(
+                            icon='images/icon.png',
+                            name=f"Delete: {task}",
+                            description="Press Enter to delete this task",
+                            on_enter=ExtensionCustomAction({"action": "remove_task", "index": i})
+                        )
                     )
-                )
+                else:
+                    items.append(
+                        ExtensionResultItem(
+                            icon='images/icon.png',
+                            name=task,
+                            description="Task",
+                            on_enter=DoNothingAction()
+                        )
+                    )
                 
         return RenderResultListAction(items)
 
@@ -74,15 +88,32 @@ class ItemEnterEventListener(EventListener):
         if data["action"] == "add_task":
             tasks.append(data["task"])
             save_tasks(tasks)
+            return RenderResultListAction([
+                ExtensionResultItem(
+                    icon='images/icon.png',
+                    name="Task added successfully!",
+                    description="",
+                    on_enter=DoNothingAction()
+                )
+            ])
         elif data["action"] == "remove_task":
             if 0 <= data["index"] < len(tasks):
+                removed_task = tasks[data["index"]]
                 del tasks[data["index"]]
                 save_tasks(tasks)
-                
+                return RenderResultListAction([
+                    ExtensionResultItem(
+                        icon='images/icon.png',
+                        name=f"Deleted: {removed_task}",
+                        description="Task removed successfully",
+                        on_enter=DoNothingAction()
+                    )
+                ])
+        
         return RenderResultListAction([
             ExtensionResultItem(
-                icon='images/icon.png',  
-                name="Task updated successfully!",
+                icon='images/icon.png',
+                name="Operation completed",
                 description="",
                 on_enter=DoNothingAction()
             )

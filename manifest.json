@@ -14,5 +14,13 @@
       "name": "TODO Keyword",
       "description": "Keyword to trigger the TODO extension",
       "default_value": "TODO"
+    },
+    {
+      "id": "del_kw",
+      "type": "keyword",
+      "name": "Delete Keyword",
+      "description": "Keyword to delete tasks from the TODO list",
+      "default_value": "del"
     }
-  ]}
+  ]
+}
