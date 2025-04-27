@@ -13,7 +13,7 @@
       "type": "keyword",
       "name": "TODO Keyword",
       "description": "Keyword to trigger the TODO extension",
-      "default_value": "TODO"
+      "default_value": "todo"
     },
     {
       "id": "del_kw",

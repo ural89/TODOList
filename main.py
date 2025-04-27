@@ -32,7 +32,6 @@ class KeywordQueryEventListener(EventListener):
         items = []
         tasks = load_tasks()
         
-        # Check if we're using the delete keyword
         keyword = event.get_argument()
         del_mode = keyword == extension.preferences['del_kw']
         if query.strip() and not del_mode:
@@ -46,7 +45,6 @@ class KeywordQueryEventListener(EventListener):
                 )
             )
         
-        # Show all tasks
         if not tasks:
             items.append(
                 ExtensionResultItem(
